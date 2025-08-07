@@ -1,9 +1,9 @@
 {
-  "vendor": "CHANGE_ME",
-  "name": "CHANGE_ME",
+  "vendor": "valtech",
+  "name": "fortune-cooky-app",
   "version": "0.0.0",
-  "title": "CHANGE_ME",
-  "description": "CHANGE_ME",
+  "title": "Fortune cooky App",
+  "description": "Custom fortune cooky application for VTEX IO",
   "builders": {
     "react": "3.x",
     "messages": "1.x",
