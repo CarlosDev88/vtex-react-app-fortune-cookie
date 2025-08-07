@@ -1,19 +1,19 @@
 export interface FortuneMessage {
-  text: string;
-  luckyNumber: string;
+  message: string
+  number: string
 }
 
 export interface TextSectionProps {
-  title?: string;
-  highlightText?: string;
-  subtitle?: string;
+  title?: string
+  highlightText?: string
+  subtitle?: string
 }
 
 export interface ActionButtonProps {
-  text?: string;
-  onClick?: () => void;
+  text?: string
+  onClick?: () => void
 }
 
 export interface MessageAreaProps {
-  message?: FortuneMessage;
+  message?: FortuneMessage
 }

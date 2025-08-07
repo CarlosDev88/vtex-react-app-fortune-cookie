@@ -1,3 +1,1 @@
-import FortuneCookie from "./components/FortuneCookie";
-
-export default FortuneCookie;
+export { default } from './components/FortuneCookie';

@@ -1,36 +1,20 @@
 {
-  "$schema": "./node_modules/typescript/lib/tsconfig.schema.json",
   "extends": "@vtex/tsconfig",
   "compilerOptions": {
+    "jsx": "react-jsx",
     "noEmitOnError": false,
-    "lib": ["dom", "es2017", "es6"],
+    "lib": [
+      "dom",
+      "es6"
+    ],
     "module": "esnext",
     "moduleResolution": "node",
     "target": "es2017",
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "react-jsx",
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "declaration": false,
-    "baseUrl": "./",
-    "paths": {
-      "vtex.*": ["./node_modules/@types/vtex.*"]
-    }
+    "noImplicitAny": false
   },
   "include": [
     "./typings/*.d.ts",
     "./**/*.tsx",
     "./**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx"
   ]
 }

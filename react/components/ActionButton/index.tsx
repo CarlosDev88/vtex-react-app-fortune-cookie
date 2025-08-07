@@ -1,4 +1,4 @@
-import { ActionButtonProps } from 'types';
+import { ActionButtonProps } from '../../types';
 import { useCssHandles } from 'vtex.css-handles';
 
 
