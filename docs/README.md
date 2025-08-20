@@ -1,6 +1,6 @@
 
 
-# 📘 Documentación Técnica - Fortune Cooky App
+# 📘 Fortune Cooky App
 
 ## 1. Información General
 
