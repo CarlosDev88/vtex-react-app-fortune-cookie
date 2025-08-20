@@ -1,114 +1,226 @@
-📢 Use this project, [contribute](https://github.com/{OrganizationName}/{AppName}) to it or open issues to help evolve it using [Store Discussion](https://github.com/vtex-apps/store-discussion).
-
-# APP NAME
-
-<!-- DOCS-IGNORE:start -->
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-<!-- DOCS-IGNORE:end -->
-
-Under the app's name, you should explain the topic, giving a **brief description** of its **functionality** in a store when installed.
-
-Next, **add media** (either an image of a GIF) with the rendered components, so that users can better understand how the app works in practice. 
-
-![Media Placeholder](https://user-images.githubusercontent.com/52087100/71204177-42ca4f80-227e-11ea-89e6-e92e65370c69.png)
-
-## Configuration 
-
-In this section, you first must **add the primary instructions** that will allow users to use the app's blocks in their store, such as:
-
-1. Adding the app as a theme dependency in the `manifest.json` file;
-2. Declaring the app's main block in a given theme template or inside another block from the theme.
-
-Remember to add a table with all blocks exported by the app and their descriptions. You can verify an example of it on the [Search Result documentation](https://vtex.io/docs/components/all/vtex.search-result@3.56.1/). 
-
-Next, add the **props table** containing your block's props. 
-
-If the app exports more than one block, create several tables - one for each block. For example:
-
-### `block-1` props
-
-| Prop name    | Type            | Description    | Default value                                                                                                                               |
-| ------------ | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | 
-| `XXXXX`      | `XXXXXX`       | XXXXXXXX         | `XXXXXX`        |
 
 
-### `block-2` props
+# 📘 Documentación Técnica - Fortune Cooky App
 
-| Prop name    | Type            | Description    | Default value                                                                                                                               |
-| ------------ | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | 
-| `XXXXX`      | `XXXXXX`       | XXXXXXXX         | `XXXXXX`        |
+## 1. Información General
 
-Prop types are: 
+- **Vendor:** `valtech`  
+- **Nombre de la App:** `fortune-cooky-app`  
+- **Versión:** `0.0.0`  
+- **Título:** Fortune Cooky App  
+- **Descripción:** Aplicación personalizada para VTEX IO que muestra mensajes de galletas de la fortuna consumiendo un microservicio expuesto a través del endpoint `/_v/message`.  
+- **Framework:** React + VTEX IO Store Framework.  
 
-- `string` 
-- `enum` 
-- `number` 
-- `boolean` 
-- `object` 
-- `array` 
+---
 
-When documenting a prop whose type is `object` or `array` another prop table will be needed. You can create it following the example below:
+## 2. Arquitectura
 
-- `propName` object:
+La aplicación está construida sobre el ecosistema **VTEX IO** y utiliza el patrón **Store Block** para integrarse en `store-theme`.  
 
-| Prop name    | Type            | Description    | Default value                                                                                                                               |
-| ------------ | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | 
-| `XXXXX`      | `XXXXXX`       | XXXXXXXX         | `XXXXXX`        |
+### 2.1. Estructura del Proyecto
+
+```bash
+/react
+ ├── components/
+ │   ├── ActionButton.tsx
+ │   ├── MessageArea.tsx
+ │   ├── TextSection.tsx
+ │   └── FortuneCookie.tsx
+ │
+ ├── hooks/
+ │   └── useFortuneCookie.ts
+ │
+ ├── types/
+ │   └── index.ts
+ │
+ └── manifest.json
+````
+
+---
+
+### 2.2. Componentes Principales
+
+* **FortuneCookie** → Componente raíz que orquesta la aplicación.
+* **MessageArea** → Renderiza la fortuna obtenida desde el servicio.
+* **ActionButton** → Botón de acción que dispara la API.
+* **TextSection** → Sección de encabezado o subtítulo (personalizable).
+
+### 2.3. Hook Personalizado
+
+* **useFortuneCookie**
+
+  * Maneja la lógica de negocio y la conexión con el microservicio.
+  * Implementa un sistema de **retry automático**.
+  * Retorna:
+
+    ```ts
+    {
+      data: { message: string; number: string } | null,
+      loading: boolean,
+      error: string | null,
+      fetchFortuneCookies: () => Promise<void>
+    }
+    ```
+
+---
+
+## 3. Configuración en VTEX IO
+
+### 3.1. Manifest
+
+```json
+{
+  "vendor": "valtech",
+  "name": "fortune-cooky-app",
+  "version": "0.0.0",
+  "title": "Fortune cooky App",
+  "description": "Custom fortune cooky application for VTEX IO",
+  "builders": {
+    "react": "3.x",
+    "messages": "1.x",
+    "docs": "0.x",
+    "store": "0.x"
+  },
+  "dependencies": {
+    "vtex.css-handles": "0.x",
+    "vtex.store-graphql": "2.x",
+    "vtex.search-graphql": "0.x",
+    "vtex.styleguide": "9.x"
+  },
+  "registries": ["smartcheckout"],
+  "policies": []
+}
+```
+
+### 3.2. Store Block
+
+```json
+{
+  "cookie-fortune-message": {
+    "component": "FortuneCookie"
+  }
+}
+```
+
+Uso en `store-theme`:
+
+```json
+"cookie-fortune-message": {}
+```
+
+---
+
+## 4. API Consumida
+
+* **URL:** `/_v/message`
+* **Método:** `GET`
+
+### Respuesta esperada
+
+```json
+{
+  "data": {
+    "message": "Hoy será un gran día",
+    "number": "07-12-2025"
+  }
+}
+```
+
+### Manejo de Errores
+
+* Hasta **3 reintentos** con retraso de **300ms**.
+* Estados:
+
+  * `loading`: petición en curso.
+  * `error`: mensaje legible para el usuario.
+  * `data`: fortuna retornada por la API.
+
+---
+
+## 5. Estilos
+
+Manejo de clases con **`vtex.css-handles`**.
+
+### Handles disponibles:
+
+* `fortuneCookieWrapper`
+* `container`
+* `imageSection`
+* `fortuneMessageContainer`
+* `fortuneMessagePaper`
+* `fortuneText`
+* `luckyNumberText`
+* `cookieImage`
+
+Ejemplo de override en `store-theme`:
+
+```json
+"css": {
+  "fortuneText": "custom-fortune-text"
+}
+```
+
+---
+
+## 6. Flujo de Ejecución
+
+1. Usuario carga el bloque `cookie-fortune-message`.
+2. UI muestra botón y espacio vacío.
+3. Usuario hace clic → se ejecuta `fetchFortuneCookies`.
+4. API responde:
+
+   * Si **OK** → Renderiza mensaje y número.
+   * Si **Error** → Muestra mensaje de error.
+
+### Diagrama de Flujo
+
+```mermaid
+flowchart TD
+    A[Click en botón] --> B[Llamada fetchFortuneCookies]
+    B --> C[GET /_v/message]
+    C -->|OK| D[Renderizar MessageArea con fortuna]
+    C -->|Error| E[Mostrar error en UI]
+```
+
+---
+
+## 7. Instalación y Despliegue
+
+### Requisitos
+
+* Node.js `v16+`
+* Yarn
+* CLI VTEX IO instalada
+
+### Pasos
+
+```bash
+# Instalar dependencias
+yarn install
+
+# Seleccionar workspace
+vtex use {workspace}
+
+# Linkear en VTEX IO
+vtex link
+
+# Publicar
+vtex publish
+```
+
+Agregar en `store-theme`:
+
+```json
+"cookie-fortune-message": {}
+```
+
+---
+
+## 8. Consideraciones Técnicas
+
+* **Separation of concerns**: UI ↔ lógica desacoplada.
+* **Retry automático** implementado.
+* **Customización** mediante `css-handles`.
+* **Compatibilidad total** con store-framework como bloque.
 
 
-Remember to also use this Configuration section to  **showcase any necessary disclaimer** related to the app and its blocks, such as the different behavior it may display during its configuration. 
-
-## Modus Operandi *(not mandatory)*
-
-There are scenarios in which an app can behave differently in a store, according to how it was added to the catalog, for example. It's crucial to go through these **behavioral changes** in this section, allowing users to fully understand the **practical application** of the app in their store.
-
-If you feel compelled to give further details about the app, such as it's **relationship with the VTEX admin**, don't hesitate to use this section. 
-
-## Customization
-
-The first thing that should be present in this section is the sentence below, showing users the recipe pertaining to CSS customization in apps:
-
-`In order to apply CSS customizations in this and other blocks, follow the instructions given in the recipe on [Using CSS Handles for store customization](https://vtex.io/docs/recipes/style/using-css-handles-for-store-customization).`
-
-Thereafter, you should add a single column table with the available CSS handles for the app, like the one below. Note that the Handles must be ordered alphabetically.
-
-| CSS Handles |
-| ----------- | 
-| `XXXXX` | 
-| `XXXXX` | 
-| `XXXXX` | 
-| `XXXXX` | 
-| `XXXXX` |
-
-
-If there are none, add the following sentence instead:
-
-`No CSS Handles are available yet for the app customization.`
-
-<!-- DOCS-IGNORE:start -->
-
-## Contributors ✨
-
-Thanks goes to these wonderful people:
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<!-- markdownlint-enable -->
-<!-- prettier-ignore-end -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind are welcome!
-
-<!-- DOCS-IGNORE:end -->
-
----- 
-
-Check out some documentation models that are already live: 
-- [Breadcrumb](https://github.com/vtex-apps/breadcrumb)
-- [Image](https://vtex.io/docs/components/general/vtex.store-components/image)
-- [Condition Layout](https://vtex.io/docs/components/all/vtex.condition-layout@1.1.6/)
-- [Add To Cart Button](https://vtex.io/docs/components/content-blocks/vtex.add-to-cart-button@0.9.0/)
-- [Store Form](https://vtex.io/docs/components/all/vtex.store-form@0.3.4/)
